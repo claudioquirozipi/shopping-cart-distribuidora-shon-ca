@@ -4,17 +4,17 @@ import Header from '@/components/Header'
 import ShopClient from './ShopClient'
 
 interface Props {
-  params: Promise<{ tier: string }>
+  params: Promise<{ listaTier: string }>
 }
 
 export default async function TierPage({ params }: Props) {
-  const { tier } = await params
+  const { listaTier } = await params
 
-  if (tier !== '1' && tier !== '2') {
-    notFound()
-  }
+  const tierMatch = listaTier.match(/^lista-([12])$/)
+  if (!tierMatch) notFound()
 
-  const products = getProducts(tier as '1' | '2')
+  const tier = tierMatch[1] as '1' | '2'
+  const products = getProducts(tier)
   const categories = getCategories(products)
 
   return (
