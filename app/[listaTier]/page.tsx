@@ -10,11 +10,9 @@ interface Props {
 export default async function TierPage({ params }: Props) {
   const { listaTier } = await params
 
-  const tierMatch = listaTier.match(/^lista-([12])$/)
-  if (!tierMatch) notFound()
+  if (listaTier !== 'lista-1') notFound()
 
-  const tier = tierMatch[1] as '1' | '2'
-  const products = getProducts(tier)
+  const products = await getProducts()
   const categories = getCategories(products)
 
   return (
@@ -23,7 +21,7 @@ export default async function TierPage({ params }: Props) {
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-4">
           <h2 className="font-heading font-semibold text-[#212121]">
-            Lista de Precios {tier}
+            Catálogo de Productos
           </h2>
           <p className="font-body text-sm text-[#757575]">
             {products.length} productos disponibles

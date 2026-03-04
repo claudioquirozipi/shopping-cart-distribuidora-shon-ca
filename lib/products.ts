@@ -1,25 +1,26 @@
-import priceListData from '@/data/price-list.json'
+import { fetchAllProducts, fetchPriceLists, ApiProduct } from './api'
 import { Product } from '@/types'
 
-interface RawProduct {
-  code: string
-  description: string
-  price1: number
-  price2: number
-  image: string
-  category: string
-}
+const PRICE_LIST_NAME = process.env.NEXT_PUBLIC_PRICE_LIST_NAME ?? 'lista-1'
 
-const rawProducts = priceListData.products as RawProduct[]
+export async function getProducts(): Promise<Product[]> {
+  const priceLists = await fetchPriceLists()
 
-export function getProducts(tier: '1' | '2'): Product[] {
-  const priceKey = tier === '1' ? 'price1' : 'price2'
-  return rawProducts.map((p) => ({
+  // Buscar por nombre exacto; si no existe, usar el primero disponible
+  const priceList =
+    priceLists.find((pl) => pl.name.toLowerCase() === PRICE_LIST_NAME.toLowerCase()) ??
+    priceLists[0]
+
+  const apiProducts = await fetchAllProducts(priceList?.id)
+
+  return apiProducts.map((p: ApiProduct): Product => ({
+    id: p.id,
     code: p.code,
-    description: p.description,
-    price: p[priceKey],
-    image: p.image,
-    category: p.category,
+    description: p.name,
+    basePrice: Number(p.price),
+    price: p.listPrice !== undefined ? p.listPrice : Number(p.price),
+    image: p.imageUrl ?? '',
+    category: p.category.name,
   }))
 }
 
