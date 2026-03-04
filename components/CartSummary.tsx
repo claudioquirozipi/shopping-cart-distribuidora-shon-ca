@@ -1,13 +1,16 @@
 'use client'
 
 import { useCart } from '@/context/CartContext'
+import { useBusiness } from '@/context/BusinessContext'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 
 export default function CartSummary() {
   const { items, total, clearCart } = useCart()
+  const business = useBusiness()
 
   const handleWhatsApp = () => {
-    const url = buildWhatsAppUrl(items, total)
+    const phone = business?.phone ?? ''
+    const url = buildWhatsAppUrl(items, total, phone)
     window.open(url, '_blank')
   }
 

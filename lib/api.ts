@@ -92,7 +92,17 @@ export async function fetchAllProducts(
   return allItems
 }
 
-export async function fetchBusiness() {
+export interface ApiBusiness {
+  name: string
+  logo: string | null
+  description: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  currency: string | null
+}
+
+export async function fetchBusiness(): Promise<ApiBusiness> {
   const res = await fetch(buildUrl('/business'), {
     headers: getHeaders(),
     cache: 'no-store',

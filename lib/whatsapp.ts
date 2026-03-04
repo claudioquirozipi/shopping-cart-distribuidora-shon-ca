@@ -1,15 +1,17 @@
 import { CartItem } from '@/types'
 
-const PHONE = '584120000000'
-
-export function buildWhatsAppUrl(items: CartItem[], total: number): string {
+export function buildWhatsAppUrl(
+  items: CartItem[],
+  total: number,
+  phone: string,
+): string {
   const lines = items.map(
     (item) =>
-      `• ${item.description} x${item.quantity} — $${(item.price * item.quantity).toFixed(2)}`
+      `• ${item.description} x${item.quantity} — $${(item.price * item.quantity).toFixed(2)}`,
   )
 
   const message = [
-    '🛒 *Pedido - Distribuidora Shon C.A.*',
+    '🛒 *Pedido*',
     '',
     '📦 *Productos:*',
     ...lines,
@@ -17,5 +19,6 @@ export function buildWhatsAppUrl(items: CartItem[], total: number): string {
     `💰 *Total: $${total.toFixed(2)}*`,
   ].join('\n')
 
-  return `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`
+  const number = phone.replace(/\D/g, '')
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
 }

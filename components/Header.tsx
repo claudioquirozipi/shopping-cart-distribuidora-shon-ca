@@ -2,24 +2,32 @@
 
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
+import { useBusiness } from '@/context/BusinessContext'
 
 export default function Header() {
   const { itemCount, toggleCart } = useCart()
+  const business = useBusiness()
 
   return (
     <header className="sticky top-0 z-40 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Image
-            src="/logo-distribuidora-shon.jpg"
-            alt="Distribuidora Shon C.A."
-            width={48}
-            height={48}
-            className="rounded-xl object-contain"
-          />
+          {business?.logo ? (
+            <Image
+              src={business.logo}
+              alt={business.name}
+              width={48}
+              height={48}
+              className="rounded-xl object-contain"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-xl bg-[#E91E63] flex items-center justify-center text-white font-bold text-lg">
+              {business?.name?.[0] ?? 'S'}
+            </div>
+          )}
           <div>
             <h1 className="font-heading font-bold text-lg leading-tight text-[#212121]">
-              Distribuidora Shon
+              {business?.name ?? 'Cargando...'}
             </h1>
             <p className="font-label text-xs text-[#757575]">Lista de Precios</p>
           </div>
