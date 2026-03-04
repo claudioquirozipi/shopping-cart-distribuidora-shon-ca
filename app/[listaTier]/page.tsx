@@ -3,19 +3,25 @@ import { getProducts, getCategories } from '@/lib/products'
 import { fetchBusiness } from '@/lib/api'
 import { BusinessProvider } from '@/context/BusinessContext'
 import Header from '@/components/Header'
-import ShopClient from './ShopClient'
+import ShopClient from '@/components/ShopClient'
 
 interface Props {
   params: Promise<{ listaTier: string }>
 }
 
+const ROUTES: Record<string, { withPriceList: boolean; label: string }> = {
+  'precios-base': { withPriceList: false, label: 'Precios Base' },
+  'tarifa-vip':   { withPriceList: true,  label: 'Tarifa VIP'   },
+}
+
 export default async function TierPage({ params }: Props) {
   const { listaTier } = await params
 
-  if (listaTier !== 'lista-1') notFound()
+  const route = ROUTES[listaTier]
+  if (!route) notFound()
 
   const [products, business] = await Promise.all([
-    getProducts(),
+    getProducts(route.withPriceList),
     fetchBusiness(),
   ])
   const categories = getCategories(products)
@@ -27,7 +33,7 @@ export default async function TierPage({ params }: Props) {
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="mb-4">
             <h2 className="font-heading font-semibold text-[#212121]">
-              Catálogo de Productos
+              Catálogo — {route.label}
             </h2>
             <p className="font-body text-sm text-[#757575]">
               {products.length} productos disponibles

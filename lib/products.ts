@@ -3,15 +3,18 @@ import { Product } from '@/types'
 
 const PRICE_LIST_NAME = process.env.NEXT_PUBLIC_PRICE_LIST_NAME ?? 'lista-1'
 
-export async function getProducts(): Promise<Product[]> {
-  const priceLists = await fetchPriceLists()
+export async function getProducts(withPriceList = true): Promise<Product[]> {
+  let priceListId: number | undefined
 
-  // Buscar por nombre exacto; si no existe, usar el primero disponible
-  const priceList =
-    priceLists.find((pl) => pl.name.toLowerCase() === PRICE_LIST_NAME.toLowerCase()) ??
-    priceLists[0]
+  if (withPriceList) {
+    const priceLists = await fetchPriceLists()
+    const priceList =
+      priceLists.find((pl) => pl.name.toLowerCase() === PRICE_LIST_NAME.toLowerCase()) ??
+      priceLists[0]
+    priceListId = priceList?.id
+  }
 
-  const apiProducts = await fetchAllProducts(priceList?.id)
+  const apiProducts = await fetchAllProducts(priceListId)
 
   return apiProducts.map((p: ApiProduct): Product => ({
     id: p.id,

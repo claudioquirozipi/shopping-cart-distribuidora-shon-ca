@@ -54,18 +54,36 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between">
-            <span className="font-label text-xs text-[#757575]">Precio base</span>
-            <span className="font-body text-sm text-[#757575]">
-              ${product.basePrice.toFixed(2)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-label text-xs text-[#E91E63] font-semibold">Lista-1</span>
-            <span className="font-heading font-bold text-lg text-[#212121]">
-              ${product.price.toFixed(2)}
-            </span>
-          </div>
+          {product.price !== product.basePrice ? (
+            // Tiene precio VIP diferente al base
+            <>
+              <div className="flex items-center justify-between">
+                <span className="font-label text-xs text-[#757575]">Precio base</span>
+                <span className="font-body text-sm text-[#757575] line-through">
+                  ${product.basePrice.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1 font-label text-xs text-[#E91E63] font-semibold">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  Tarifa VIP
+                </span>
+                <span className="font-heading font-bold text-lg text-[#E91E63]">
+                  ${product.price.toFixed(2)}
+                </span>
+              </div>
+            </>
+          ) : (
+            // Sin precio VIP — solo muestra el precio base
+            <div className="flex items-center justify-between">
+              <span className="font-label text-xs text-[#757575]">Precio</span>
+              <span className="font-heading font-bold text-lg text-[#212121]">
+                ${product.basePrice.toFixed(2)}
+              </span>
+            </div>
+          )}
         </div>
 
         <button
