@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getProducts, getCategories } from '@/lib/products'
 import { fetchBusiness } from '@/lib/api'
 import { BusinessProvider } from '@/context/BusinessContext'

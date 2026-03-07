@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { notFound } from 'next/navigation'
 import { getProducts, getCategories } from '@/lib/products'
 import { fetchBusiness } from '@/lib/api'

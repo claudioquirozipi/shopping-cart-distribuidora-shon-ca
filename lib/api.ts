@@ -1,6 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
-const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION ?? 'v1'
-const BUSINESS_ID = process.env.NEXT_PUBLIC_BUSINESS_ID ?? ''
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v1'
+const BUSINESS_ID = process.env.NEXT_PUBLIC_BUSINESS_ID || ''
 // const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? ''  // temporalmente desactivada
 
 const BASE_URL = `${API_URL}/${API_VERSION}/storefront`

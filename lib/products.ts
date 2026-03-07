@@ -1,7 +1,7 @@
 import { fetchAllProducts, fetchPriceLists, ApiProduct } from './api'
 import { Product } from '@/types'
 
-const PRICE_LIST_NAME = process.env.NEXT_PUBLIC_PRICE_LIST_NAME ?? 'lista-1'
+const PRICE_LIST_NAME = process.env.NEXT_PUBLIC_PRICE_LIST_NAME || 'lista-1'
 
 export async function getProducts(withPriceList = true): Promise<Product[]> {
   let priceListId: number | undefined
