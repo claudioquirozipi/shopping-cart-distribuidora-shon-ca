@@ -65,6 +65,33 @@ export async function fetchPriceLists(): Promise<ApiPriceList[]> {
   return res.json()
 }
 
+export async function fetchProductsPage(
+  page: number,
+  limit: number,
+  priceListId?: number,
+  categoryId?: number,
+): Promise<ApiProductsResponse> {
+  const params: Record<string, string | number> = { page, limit }
+  if (priceListId !== undefined) params.priceListId = priceListId
+  if (categoryId !== undefined) params.categoryId = categoryId
+
+  const res = await fetch(buildUrl('/products', params), {
+    headers: getHeaders(),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(`Error al obtener productos: ${res.status}`)
+  return res.json()
+}
+
+export async function fetchCategories(): Promise<ApiCategory[]> {
+  const res = await fetch(buildUrl('/categories'), {
+    headers: getHeaders(),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(`Error al obtener categorías: ${res.status}`)
+  return res.json()
+}
+
 export async function fetchAllProducts(
   priceListId?: number,
 ): Promise<ApiProduct[]> {
@@ -73,18 +100,8 @@ export async function fetchAllProducts(
   const allItems: ApiProduct[] = []
 
   while (true) {
-    const params: Record<string, string | number> = { page, limit }
-    if (priceListId !== undefined) params.priceListId = priceListId
-
-    const res = await fetch(buildUrl('/products', params), {
-      headers: getHeaders(),
-      cache: 'no-store',
-    })
-    if (!res.ok) throw new Error(`Error al obtener productos: ${res.status}`)
-
-    const data: ApiProductsResponse = await res.json()
+    const data = await fetchProductsPage(page, limit, priceListId)
     allItems.push(...data.items)
-
     if (allItems.length >= data.total || data.items.length < limit) break
     page++
   }

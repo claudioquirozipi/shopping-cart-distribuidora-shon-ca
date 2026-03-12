@@ -1,8 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
-import { getProducts, getCategories } from '@/lib/products'
-import { fetchBusiness } from '@/lib/api'
+import { fetchPriceLists, fetchBusiness } from '@/lib/api'
 import { BusinessProvider } from '@/context/BusinessContext'
 import Header from '@/components/Header'
 import ShopClient from '@/components/ShopClient'
@@ -13,20 +12,29 @@ interface Props {
 
 const ROUTES: Record<string, { withPriceList: boolean; label: string }> = {
   'precios-base': { withPriceList: false, label: 'Precios Base' },
-  'tarifa-vip':   { withPriceList: true,  label: 'Tarifa VIP'   },
+  'tarifa-vip':   { withPriceList: true,  label: 'Tarifa VIP'  },
 }
+
+const PRICE_LIST_NAME = process.env.NEXT_PUBLIC_PRICE_LIST_NAME || 'lista-1'
 
 export default async function TierPage({ params }: Props) {
   const { listaTier } = await params
-
   const route = ROUTES[listaTier]
   if (!route) notFound()
 
-  const [products, business] = await Promise.all([
-    getProducts(route.withPriceList),
+  let priceListId: number | undefined
+
+  const [priceLists, business] = await Promise.all([
+    route.withPriceList ? fetchPriceLists() : Promise.resolve([]),
     fetchBusiness(),
   ])
-  const categories = getCategories(products)
+
+  if (route.withPriceList && priceLists.length > 0) {
+    const found = priceLists.find(
+      (pl) => pl.name.toLowerCase() === PRICE_LIST_NAME.toLowerCase(),
+    )
+    priceListId = found?.id ?? priceLists[0]?.id
+  }
 
   return (
     <BusinessProvider business={business}>
@@ -37,11 +45,8 @@ export default async function TierPage({ params }: Props) {
             <h2 className="font-heading font-semibold text-[#212121]">
               Catálogo — {route.label}
             </h2>
-            <p className="font-body text-sm text-[#757575]">
-              {products.length} productos disponibles
-            </p>
           </div>
-          <ShopClient products={products} categories={categories} />
+          <ShopClient priceListId={priceListId} />
         </main>
       </div>
     </BusinessProvider>
